@@ -1,3 +1,6 @@
+### In case of Firebase Duplication Error, please reload the page. 
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
