@@ -1,3 +1,5 @@
+# In case of Firebase Duplication Error, please reload the page. 
+
 # allergy-crud-description
 ReactJs CRUD, with Firebase Realtime DB.
 
@@ -14,55 +16,79 @@ npm start
 ```
 
 
-
+## write user data
 
 
 ```js
-    const ref = firebase.database().ref("your ref");
-    // initialize data
-    const data = {....}
-    //add to db
-    ref.push(data);
+  writeUserData = () => {
+    Firebase.database()
+      .ref("/")
+      .set(this.state);
+    console.log("DATA SAVED");
+  };
 ```
 
-### delete entire data
+### get user data
 
 ```js
-const ref = firebase.database().ref('your ref');
-ref.remove(data);
+  getUserData = () => {
+    let ref = Firebase.database().ref("/");
+    ref.on("value", snapshot => {
+      const state = snapshot.val();
+      this.setState(state);
+    });
+  };
+
 ```
 
-### delete child data
+### update user data
 
 ```js
-const child = firebase.database().ref('parent').child(id);
-child.remove();
+  updateData = user => {
+    this.refs.uid.value = user.uid;
+    this.refs.name.value = user.name;
+    this.refs.birth_date.value = user.birth_date;
+  };
 ```
 
-### update
+### delete user data
 
 ```js
-    //select which child you want to update
-    const child = firebase.database().ref("partent").child(id);
-    child.update({
-        complete:true,
-        ...
-    })
+  removeData = user => {
+    const { users } = this.state;
+    const newState = users.filter(data => {
+      return data.uid !== user.uid;
+    });
+    this.setState({ user: newState });
+  };
 ```
 
-### read
+### handle-user-data-submit
 
 ```js
-const ref = firebase.database().ref('parent');
+  handleSubmit = event => {
+    event.preventDefault();
+    let name = this.refs.name.value;
+    let birth_date = this.refs.birth_date.value;
+    let uid = this.refs.uid.value;
 
-ref.on('value', (snapshot) => {
-  console.log(snapshot.val());
-});
+    if (uid && name && birth_date) {
+      const { users } = this.state;
+      const devIndex = users.findIndex(data => {
+        return data.uid === uid;
+      });
+      users[devIndex].name = name;
+      users[devIndex].birth_date = birth_date;
+      this.setState({ users });
+    } else if (name && birth_date) {
+      const uid = new Date().getTime().toString();
+      const { users } = this.state;
+      users.push({ uid, name, birth_date });
+      this.setState({ users });
+    }
 
-/* this will listen to the parent if there is something change */
-
-ref.once('value', (snapshot) => {
-  console.log(snapshot.val());
-});
-/* this will listen only one time*/
+    this.refs.name.value = "";
+    this.refs.birth_date.value = "";
+    this.refs.uid.value = "";
+  };
 ```
