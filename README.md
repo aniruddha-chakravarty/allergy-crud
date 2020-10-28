@@ -1,2 +1,3 @@
 # allergy-crud
-ReactJs CRUD.
+ReactJs CRUD, with Firebase Realtime DB.
+
